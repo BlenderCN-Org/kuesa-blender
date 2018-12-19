@@ -30,7 +30,7 @@ export BLENDER_USER_CONFIG="$PWD"
 export BLENDER_USER_SCRIPTS="$BLENDER_USER_CONFIG/__scripts__"
 BLENDER_ADDONS="$BLENDER_USER_SCRIPTS/addons"
 
-rm -r $BLENDER_ADDONS
+rm -rf $BLENDER_ADDONS
 mkdir -p $BLENDER_ADDONS
 ln -s $PWD "$BLENDER_ADDONS/kuesa"
 ln -s "$PWD/../kuesa_exporter/glTF-Blender-Exporter/scripts/addons/io_scene_gltf2" "$BLENDER_ADDONS/kuesa_exporter"
