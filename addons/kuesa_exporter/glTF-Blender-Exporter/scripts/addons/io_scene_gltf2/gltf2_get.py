@@ -18,6 +18,7 @@
 
 import bpy
 import os
+import re
 
 from .gltf2_debug import *
 
@@ -355,7 +356,10 @@ def get_image_name(blender_image):
     Return user-facing, extension-agnostic name for image.
     """
 
-    return os.path.splitext(blender_image.name)[0]
+    # Blender may provide the name as filename.png.001
+    # we need to return filename and not filename.png if that's the case
+    split = re.match("(.*)(\.(?:[a-z]|[A-Z])+)(\..+)*", blender_image.name);
+    return split.group(1)
 
 
 def get_image_uri(export_settings, blender_image):
