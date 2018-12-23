@@ -1853,13 +1853,20 @@ def generate_nodes(operator,
 
                         node['name'] = blender_object.name + "_" + blender_bone.name
 
+                        # Generate the bone tail for direct parenting
+                        distance_head_to_tail = (blender_bone.head - blender_bone.tail).length
+                        tail_node = {}
+                        tail_node['name'] = blender_object.name + "_" + blender_bone.name + "_Tail"
+                        tail_node["translation"] = [0, distance_head_to_tail, 0]
+
+
                         #
                         #
 
                         joints.append(len(nodes))
 
                         nodes.append(node)
-
+                        nodes.append(tail_node)
                     #
                     #
 
@@ -2045,11 +2052,14 @@ def generate_nodes(operator,
                         blender_bone_name = blender_object_to_bone[blender_object_name]
                         if blender_bone_name == blender_bone.name:
                             child_index = get_node_index(glTF, blender_object_name)
+                            tail_index = get_node_index(glTF, blender_object.name + "_" + blender_bone.name + "_Tail")
 
                             if child_index < 0:
                                 continue
 
-                            joint_children.append(child_index)
+                            joint_children.append(tail_index)
+
+                            nodes[tail_index]["children"] = [child_index]
 
                     if len(joint_children) > 0:
                         node_index = get_node_index(glTF, blender_object.name + "_" + blender_bone.name)
