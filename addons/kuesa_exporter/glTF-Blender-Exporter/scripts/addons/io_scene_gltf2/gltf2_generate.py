@@ -1855,10 +1855,11 @@ def generate_nodes(operator,
 
                         # Generate the bone tail for direct parenting
                         distance_head_to_tail = (blender_bone.head - blender_bone.tail).length
+                        head_to_tail_matrix = mathutils.Matrix.Translation((0, distance_head_to_tail, 0))
                         tail_node = {}
+                        # Using axis_basis_change.transposed() as its a rotation and R^T == R^-1 
+                        generate_node_parameter(export_settings, head_to_tail_matrix * axis_basis_change.transposed(),  tail_node, 'JOINT')
                         tail_node['name'] = blender_object.name + "_" + blender_bone.name + "_Tail"
-                        tail_node["translation"] = [0, distance_head_to_tail, 0]
-
 
                         #
                         #
