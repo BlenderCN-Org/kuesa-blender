@@ -27,18 +27,18 @@ The Kuesa exporter and tools for Blender requires Blender 2.78 or later
 1. Clone the repository
 2. Move into the addons directory
 3. Create a zip file for the Kuesa tools addons
-    - zip -r kuesa.zip kuesa
+ * zip -r kuesa.zip kuesa
 4. Move into kuesa_exporter/glTF-Blender-Exporter/scripts/addons/
-4. Create a zip file for the Kuesa exporter
-    cd kuesa_exporter/glTF-Blender-Exporter/scripts/addons/
-    zip -r kuesa_exporter.zip io_scene_gltf2
+5. Create a zip file for the Kuesa exporter
+ * cd kuesa_exporter/glTF-Blender-Exporter/scripts/addons/
+ * zip -r kuesa_exporter.zip io_scene_gltf2
 6. Fire up Blender
 7. Go to: Files -> User Preferences -> Add-ons -> Install Add-on from File...
 8. Search and add each zip file (one at a time)
 9. In the Add-ons search field write down kuesa
 10. You should now see two entries:
-    - All: KDAB - Kuesa Tool for Blender
-    - Import-Exporter: KDAB Kuesa glTF format
+ * All: KDAB - Kuesa Tool for Blender
+ * Import-Exporter: KDAB Kuesa glTF format
 11. Select them both and hit Save User Settings
 
 Notes: you will have to repeat the process any time the repositories are updated.
@@ -52,7 +52,7 @@ Notes: you will have to repeat the process any time the repositories are updated
 5. Go to: Files -> User Preferences -> Add-ons -> Install Add-on from File...
 6. In the Add-ons search field write down kuesa
 7. You should now see two entries:
-    - All: KDAB - Kuesa Tool for Blender
-    - Import-Exporter: KDAB Kuesa glTF format
+ * All: KDAB - Kuesa Tool for Blender
+ * Import-Exporter: KDAB Kuesa glTF format
 8. Select them both and hit Save User Settings
 
