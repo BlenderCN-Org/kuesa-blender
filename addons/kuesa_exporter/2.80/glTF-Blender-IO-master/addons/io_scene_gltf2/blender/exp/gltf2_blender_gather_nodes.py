@@ -178,6 +178,12 @@ def __gather_children(blender_object, export_settings):
 def __gather_extensions(blender_object, export_settings):
     extensions = {}
 
+    # Handle custom user defined extensions
+    for user_extension_name, user_extension in export_settings['gltf_user_extensions'].items():
+        extension = user_extension.export(blender_object, export_settings)
+        if extension:
+            extensions[user_extension_name] = extension
+
     if export_settings["gltf_lights"] and (blender_object.type == "LAMP" or blender_object.type == "LIGHT"):
         blender_lamp = blender_object.data
         light = gltf2_blender_gather_lights.gather_lights_punctual(

@@ -57,22 +57,39 @@ import bpy
 from bpy.props import (StringProperty,
                        BoolProperty,
                        EnumProperty,
-                       IntProperty)
+                       IntProperty,
+                       CollectionProperty,
+                       PointerProperty)
 from bpy.types import Operator
 from bpy_extras.io_utils import ImportHelper, ExportHelper
 from io_scene_gltf2.io.exp import gltf2_io_draco_compression_extension
-
+from io_scene_gltf2.io.exp.user_extensions import gltf2_io_user_extensions
 
 #
 #  Functions / Classes.
 #
 
+class UserExtensionPropertyGroup(bpy.types.PropertyGroup):
+    name = StringProperty(name='Extension Name')
+    enable = BoolProperty(
+        name = 'Enable',
+        description = 'Enable this extension',
+        default = False
+        )
 
 class ExportGLTF2_Base:
     # TODO: refactor to avoid boilerplate
 
     def __init__(self):
         self.is_draco_available = gltf2_io_draco_compression_extension.dll_exists()
+
+    def __del__(self):
+        for user_extension in self.user_extensions:
+            # Generate properties for each extension
+            meta = user_extension.meta
+            name = 'settings_' + meta['name']
+            property_group = type(name, (bpy.types.PropertyGroup,), meta['settings'])
+            bpy.utils.unregister_class(property_group)
 
     bl_options = {'UNDO', 'PRESET'}
 
@@ -98,7 +115,8 @@ class ExportGLTF2_Base:
         items=(('GENERAL', "General", "General settings"),
                ('MESHES', "Meshes", "Mesh settings"),
                ('OBJECTS', "Objects", "Object settings"),
-               ('ANIMATION', "Animation", "Animation settings")),
+               ('ANIMATION', "Animation", "Animation settings"),
+               ('EXTENSIONS', 'Extensions', 'Extension settings')),
         name="ui_tab",
         description="Export setting categories",
     )
@@ -316,6 +334,29 @@ class ExportGLTF2_Base:
         description='Store glTF export settings in the Blender project',
         default=False)
 
+    # Only record valid user extensions
+    user_extensions = {
+        # Record name and new instance for each extension
+        user_extension.meta['name'] : user_extension()
+        for user_extension in gltf2_io_user_extensions.UserExtensionLoader().extensions
+        if 'name' in user_extension.meta
+    }
+    # Generate properties for each extension
+    for extension_name, user_extension in user_extensions.items():
+        meta = user_extension.meta
+        if 'settings' in meta:
+            property_name = 'settings_' + meta['name']
+            property_group = type(property_name, (bpy.types.PropertyGroup,), meta['settings'])
+            bpy.utils.register_class(property_group)
+            # Dynamically add user extension settings as class attribute
+            locals()[property_name] = PointerProperty(type=property_group)
+
+    export_user_extensions = CollectionProperty(
+        name='User Extensions',
+        type=UserExtensionPropertyGroup,
+        description='Select extensions to enable'
+    )
+
     # Custom scene property for saving settings
     scene_key = "glTF2ExportSettings"
 
@@ -423,6 +464,13 @@ class ExportGLTF2_Base:
         export_settings['gltf_binaryfilename'] = os.path.splitext(os.path.basename(
             bpy.path.ensure_ext(self.filepath,self.filename_ext)))[0] + '.bin'
 
+        # Store enabled user extensions
+        export_settings['gltf_user_extensions'] = {
+            user_extension_property.name : self.user_extensions[user_extension_property.name]
+            for user_extension_property in self.export_user_extensions
+            if user_extension_property.enable
+        }
+
         return gltf2_blender_export.save(context, export_settings)
 
     def draw(self, context):
@@ -437,6 +485,8 @@ class ExportGLTF2_Base:
             self.draw_material_settings()
         elif self.ui_tab == 'ANIMATION':
             self.draw_animation_settings()
+        elif self.ui_tab == 'EXTENSIONS':
+            self.draw_user_extensions()
 
     def draw_general_settings(self):
         col = self.layout.box().column()
@@ -493,6 +543,56 @@ class ExportGLTF2_Base:
             if self.export_morph_normal:
                 col.prop(self, 'export_morph_tangent')
 
+    def draw_user_extensions(self):
+        # Ensure we have built the user extension properties
+        self.generate_user_extensions_properties()
+
+        # Draw entries for each user extension
+        col = self.layout.box().column()
+        col.label(text='User Extensions:', icon='PLUGIN')
+
+        for user_extension_property in self.export_user_extensions:
+            user_extension = self.user_extensions[user_extension_property.name]
+            row = col.row()
+
+            row.prop(user_extension_property, 'enable', text=user_extension_property.name)
+
+            if user_extension.meta.get('isDraft', False):
+                 row.prop(self, 'draft_prop', icon='ERROR', emboss=False)
+
+            info_op = row.operator('wm.url_open', icon='INFO', emboss=False)
+            info_op.url = user_extension.meta.get('url', '')
+
+            if user_extension_property.enable:
+                settings = getattr(self, 'settings_' + user_extension_property.name, None)
+                has_custom_draw_function = hasattr(user_extension, 'draw_settings')
+                if settings or has_custom_draw_function:
+                    box = col.box()
+                    if has_custom_draw_function:
+                        user_extension.draw_settings(box, settings)
+                    else:
+                        setting_props = [
+                            name for name in dir(settings)
+                            if not name.startswith('_')
+                            and name not in ('bl_rna', 'name', 'rna_type')
+                        ]
+                        for setting_prop in setting_props:
+                            box.prop(settings, setting_prop)
+
+
+    def generate_user_extensions_properties(self):
+        # Iterate over collection of properties
+        for user_extension_property in self.export_user_extensions:
+            # Update the enable state of the user_extension matching the property
+            user_extension = self.user_extensions[user_extension_property.name];
+            user_extension.meta['enable'] = user_extension_property.enable
+
+        # Clear Collection and re-add entries for all user extensions
+        self.export_user_extensions.clear()
+        for user_extension_name, user_extension in self.user_extensions.items():
+            prop = self.export_user_extensions.add()
+            prop.name = user_extension_name
+            prop.enable = user_extension.meta['enable']
 
 class ExportGLTF2(bpy.types.Operator, ExportGLTF2_Base, ExportHelper):
     """Export scene as glTF 2.0 file"""
@@ -587,6 +687,7 @@ def menu_func_import(self, context):
 
 
 classes = (
+    UserExtensionPropertyGroup,
     ExportGLTF2,
     ImportGLTF2
 )

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import re
-from typing import List
+from typing import List, Dict
 
 from ... import get_version_string
 from io_scene_gltf2.io.com import gltf2_io
@@ -20,6 +20,7 @@ from io_scene_gltf2.io.com import gltf2_io_extensions
 from io_scene_gltf2.io.exp import gltf2_io_binary_data
 from io_scene_gltf2.io.exp import gltf2_io_buffer
 from io_scene_gltf2.io.exp import gltf2_io_image_data
+from io_scene_gltf2.io.exp.user_extensions.gltf2_io_user_extensions import UserExtensionBase
 
 
 class GlTF2Exporter:
