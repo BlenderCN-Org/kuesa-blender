@@ -52,7 +52,7 @@ class KuesaLayersList(bpy.types.UIList):
 class KuesaLayerManager(bpy.types.Panel):
 
     bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS" # tools section
+    bl_region_type = "TOOLS" if bpy.app.version < (2, 80) else 'UI' # tools section
     lb_context = "objectmode" # object mode only
     bl_category = "Kuesa" # 'Kuesa' tab
     bl_label = "Kuesa Layers"

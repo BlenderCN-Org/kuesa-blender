@@ -29,9 +29,9 @@ from . import Layers
 
 bl_info = {
     "name": "KDAB - Kuesa Tools For Blender",
-    "author": "Timo Buske <timo.buske@kdab.com>",
-    "version": (0, 0, 1),
-    "blender": (2, 7, 9),
+    "author": "Timo Buske <timo.buske@kdab.com>, Paul Lemire <paul.lemire@kdab.com>",
+    "version": (0, 0, 2),
+    "blender": (2, 80, 0),
     "description": "KDAB - Kuesa Tools For Blender",
     "category": "All"
 }
