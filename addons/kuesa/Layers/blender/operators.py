@@ -31,10 +31,13 @@ from ..layermanager import LayerManager
 # operators for buttons of the list items
 
 
-class KuesaLayersOp_ItemRemove_Template(bpy.types.Operator):
+class KuesaLayersOp_ItemRemove(bpy.types.Operator):
+    """ Remove from selected objects """
 
     bl_idname = "kuesa_layers.item_remove"
     bl_label = "Remove layer from selected objects"
+
+    index = bpy.props.IntProperty()
 
     def execute(self, context):
         layer_manager = LayerManager(context)
@@ -43,20 +46,14 @@ class KuesaLayersOp_ItemRemove_Template(bpy.types.Operator):
         context.scene.kuesa_layers.layer_names_list[self.index].state = KuesaLayersListItem.STATE_OFF
         return{'FINISHED'}
 
-if bpy.app.version < (2,80):
-    class KuesaLayersOp_ItemRemove (KuesaLayersOp_ItemRemove_Template):
-        """ Remove from selected objects """
-        index = bpy.props.IntProperty()
-else:
-    class KuesaLayersOp_ItemRemove (KuesaLayersOp_ItemRemove_Template):
-        """ Remove from selected objects """
-        index: bpy.props.IntProperty()
 
-
-class KuesaLayersOp_ItemAdd_Template(bpy.types.Operator):
+class KuesaLayersOp_ItemAdd(bpy.types.Operator):
+    """ Add layer to selected objects """
 
     bl_idname = "kuesa_layers.item_add"
     bl_label = "Add layer to selected objects"
+
+    index = bpy.props.IntProperty()
 
     def execute(self, context):
         layer_manager = LayerManager(context)
@@ -65,17 +62,9 @@ class KuesaLayersOp_ItemAdd_Template(bpy.types.Operator):
         context.scene.kuesa_layers.layer_names_list[self.index].state = KuesaLayersListItem.STATE_ON
         return{'FINISHED'}
 
-if bpy.app.version < (2,80):
-    class KuesaLayersOp_ItemAdd (KuesaLayersOp_ItemAdd_Template):
-        """ Add layer to selected objects """
-        index = bpy.props.IntProperty()
-else:
-    class KuesaLayersOp_ItemAdd (KuesaLayersOp_ItemAdd_Template):
-        """ Add layer to selected objects """
-        index: bpy.props.IntProperty()
 
-
-class KuesaLayersOp_ItemSelect_Template(bpy.types.Operator):
+class KuesaLayersOp_ItemSelect(bpy.types.Operator):
+    """ Select objects with this layer """
 
     bl_idname = "kuesa_layers.item_select"
     bl_label = "Select objects with this layer"
@@ -87,16 +76,6 @@ class KuesaLayersOp_ItemSelect_Template(bpy.types.Operator):
         layer_name = context.scene.kuesa_layers.layer_names_list[self.index].name
         layer_manager.select_match_one([layer_name])
         return{'FINISHED'}
-
-if bpy.app.version < (2,80):
-    class KuesaLayersOp_ItemSelect (KuesaLayersOp_ItemSelect_Template):
-        """ Select objects with this layer """
-        index = bpy.props.IntProperty()
-else:
-    class KuesaLayersOp_ItemSelect (KuesaLayersOp_ItemSelect_Template):
-        """ Select objects with this layer """
-        index: bpy.props.IntProperty()
-
 
 # operators for buttons of the KuesaLayer panel
 
