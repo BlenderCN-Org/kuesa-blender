@@ -38,14 +38,17 @@ class KuesaLayersList(bpy.types.UIList):
     }
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        layout.label(item.name)
+        remove_icon = "ZOOMOUT" if bpy.app.version < (2,80) else "REMOVE"
+        add_icon = "ZOOMIN" if bpy.app.version < (2,80) else "ADD"
+        select_icon = "HAND" if bpy.app.version < (2,80) else "RESTRICT_SELECT_OFF"
+        layout.label(text=item.name)
         row = layout.row(align=True)
-        row.label("", icon=self.STATE_ICONS[item.state])
-        op_remove = row.operator("kuesa_layers.item_remove", icon="ZOOMOUT", text="")
+        row.label(text="", icon=self.STATE_ICONS[item.state])
+        op_remove = row.operator("kuesa_layers.item_remove", icon=remove_icon, text="")
         op_remove.index = index
-        op_add = row.operator("kuesa_layers.item_add", icon="ZOOMIN", text="")
+        op_add = row.operator("kuesa_layers.item_add", icon=add_icon, text="")
         op_add.index = index
-        op_select = row.operator("kuesa_layers.item_select", icon="HAND", text="")
+        op_select = row.operator("kuesa_layers.item_select", icon=select_icon, text="")
         op_select.index = index
 
 
