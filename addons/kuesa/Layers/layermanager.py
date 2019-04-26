@@ -24,6 +24,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import bpy
+
 class LayerManager (object):
     # helper class for managing Kuesa layers on objects
     # current blender context
@@ -78,7 +80,10 @@ class LayerManager (object):
                 if layer_name in layer_names:
                     select = True
                     break
-            blender_scene_object.select = select
+            if bpy.app.version < (2,80):
+                blender_scene_object.select = select
+            else:
+                blender_scene_object.select_set(state=select)
 
     def select_match_all(self, layer_names):
         print("select match all")
@@ -89,7 +94,10 @@ class LayerManager (object):
                 if layer_name not in names:
                     s = False
                     break
-            blender_scene_object.select = s
+            if bpy.app.version < (2,80):
+                blender_scene_object.select = select
+            else:
+                blender_scene_object.select_set(state=s)
 
     def sub(self, layer_names, blender_scene_object=None):
         if blender_scene_object is None:

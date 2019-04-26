@@ -62,14 +62,17 @@ class KuesaLayerManager(bpy.types.Panel):
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
+        refresh_icon = "INFO" if bpy.app.version < (2,80) else "FILE_REFRESH"
+        new_icon = "PARTICLES" if bpy.app.version < (2,80) else "PLUS"
+        edit_icon = "LINE_DATA" if bpy.app.version < (2,80) else "GREASEPENCIL"
         layout = self.layout
         row = layout.row(align=True)
-        row.operator("kuesa_layers.refresh", text="Refresh", icon="INFO")
+        row.operator("kuesa_layers.refresh", text="Refresh", icon=refresh_icon)
         row = layout.row(align=True)
         row.template_list("KuesaLayersList", "", context.scene.kuesa_layers, "layer_names_list", context.scene.kuesa_layers, "layer_index")
         row = layout.row(align=True)
         col = row.column(align=True)
         col.prop(context.scene.kuesa_layers, "current_layer_name", text="")
         row_ = col.row(align=True)
-        row_.operator("kuesa_layers.new_layer", text="New", icon="PARTICLES")
-        row_.operator("kuesa_layers.rename_layer", text="Rename", icon="LINE_DATA")
+        row_.operator("kuesa_layers.new_layer", text="New", icon=new_icon)
+        row_.operator("kuesa_layers.rename_layer", text="Rename", icon=edit_icon)

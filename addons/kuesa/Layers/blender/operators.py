@@ -35,7 +35,7 @@ class KuesaLayersOp_ItemRemove(bpy.types.Operator):
     """ Remove from selected objects """
 
     bl_idname = "kuesa_layers.item_remove"
-    bl_label = "Remove from selected objects"
+    bl_label = "Remove layer from selected objects"
 
     index = bpy.props.IntProperty()
 
@@ -81,10 +81,10 @@ class KuesaLayersOp_ItemSelect(bpy.types.Operator):
 
 
 class KuesaLayersOp_Refresh(bpy.types.Operator):
-    """ Refresh """
+    """ Refresh list """
 
     bl_idname = "kuesa_layers.refresh"
-    bl_label = "Refresh"
+    bl_label = "Refresh list"
 
     def execute(self, context):
         context.scene.kuesa_layers.refresh(context)
@@ -92,10 +92,10 @@ class KuesaLayersOp_Refresh(bpy.types.Operator):
 
 
 class KuesaLayersOp_NewLayer(bpy.types.Operator):
-    """ Create new layer and apply to selection """
+    """ Create new layer and attach to selected objects """
 
     bl_idname = "kuesa_layers.new_layer"
-    bl_label = "Create new layer and apply to selection"
+    bl_label = "Create new layer and attach to selected objects"
 
     def execute(self, context):
         context.scene.kuesa_layers.new_layer(context)
@@ -103,10 +103,10 @@ class KuesaLayersOp_NewLayer(bpy.types.Operator):
 
 
 class KuesaLayersOp_RenameLayer(bpy.types.Operator):
-    """ Rename Layer """
+    """ Rename selected layer according to text box """
 
     bl_idname = "kuesa_layers.rename_layer"
-    bl_label = "Rename Layer"
+    bl_label = "Rename selected layer according to text box"
 
     def execute(self, context):
         context.scene.kuesa_layers.rename_layer(context)
