@@ -29,7 +29,7 @@ from .properties import KuesaLayersListItem
 # Blender panels for Layers
 
 
-class KuesaLayersList(bpy.types.UIList):
+class KUESA_UL_KuesaLayersList(bpy.types.UIList):
 
     STATE_ICONS = {
         KuesaLayersListItem.STATE_OFF: "PROP_OFF",
@@ -52,7 +52,7 @@ class KuesaLayersList(bpy.types.UIList):
         op_select.index = index
 
 
-class KuesaLayerManager(bpy.types.Panel):
+class KUESA_PT_KuesaLayerManager(bpy.types.Panel):
 
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS" if bpy.app.version < (2, 80) else 'UI' # tools section
@@ -69,7 +69,7 @@ class KuesaLayerManager(bpy.types.Panel):
         row = layout.row(align=True)
         row.operator("kuesa_layers.refresh", text="Refresh", icon=refresh_icon)
         row = layout.row(align=True)
-        row.template_list("KuesaLayersList", "", context.scene.kuesa_layers, "layer_names_list", context.scene.kuesa_layers, "layer_index")
+        row.template_list("KUESA_UL_KuesaLayersList", "", context.scene.kuesa_layers, "layer_names_list", context.scene.kuesa_layers, "layer_index")
         row = layout.row(align=True)
         col = row.column(align=True)
         col.prop(context.scene.kuesa_layers, "current_layer_name", text="")

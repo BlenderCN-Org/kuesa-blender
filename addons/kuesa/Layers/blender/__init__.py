@@ -34,8 +34,8 @@ from .operators import KuesaLayersOp_ItemRemove,\
 from .properties import KuesaLayerPropertyGroup,\
                         KuesaLayersListItem,\
                         KuesaLayersPropertyGroup
-from .panel import KuesaLayersList,\
-                   KuesaLayerManager
+from .panel import KUESA_UL_KuesaLayersList,\
+                   KUESA_PT_KuesaLayerManager
 
 
 def register():
@@ -45,24 +45,24 @@ def register():
     bpy.utils.register_class(KuesaLayersOp_ItemAdd)
     bpy.utils.register_class(KuesaLayersOp_ItemSelect)
     bpy.utils.register_class(KuesaLayersListItem)
-    bpy.utils.register_class(KuesaLayersList)
+    bpy.utils.register_class(KUESA_UL_KuesaLayersList)
     bpy.utils.register_class(KuesaLayersPropertyGroup)
     bpy.utils.register_class(KuesaLayersOp_Refresh)
     bpy.utils.register_class(KuesaLayersOp_NewLayer)
     bpy.utils.register_class(KuesaLayersOp_RenameLayer)
-    bpy.utils.register_class(KuesaLayerManager)
+    bpy.utils.register_class(KUESA_PT_KuesaLayerManager)
     bpy.types.Scene.kuesa_layers = bpy.props.PointerProperty(type=KuesaLayersPropertyGroup)
 
 
 def unregister():
     print("unregister Kuesa layers plugin")
     del bpy.types.Scene.kuesa_layers
-    bpy.utils.unregister_class(KuesaLayerManager)
+    bpy.utils.unregister_class(KUESA_PT_KuesaLayerManager)
     bpy.utils.unregister_class(KuesaLayersOp_RenameLayer)
     bpy.utils.unregister_class(KuesaLayersOp_NewLayer)
     bpy.utils.unregister_class(KuesaLayersOp_Refresh)
     bpy.utils.unregister_class(KuesaLayersPropertyGroup)
-    bpy.utils.unregister_class(KuesaLayersList)
+    bpy.utils.unregister_class(KUESA_UL_KuesaLayersList)
     bpy.utils.unregister_class(KuesaLayersListItem)
     bpy.utils.unregister_class(KuesaLayersOp_ItemSelect)
     bpy.utils.unregister_class(KuesaLayersOp_ItemAdd)
