@@ -13,23 +13,26 @@ class KDABKuesaLayers(UserExtensionBase):
     }
 
     def export(self, blender_object, export_settings):
-        # Export per node layers
-        kuesa_layer_names = []
+        kuesa_layers = None
+        try:
+            kuesa_layers = blender_object.kuesa.layers
+        except:
+            return None
 
-        if 'kuesa' in blender_obj.keys() and 'layers' in blender_object.kuesa.keys():
-            node_layer_names = [layer.name for layer in blender_object.kuesa.layers]
-            if node_layer_names:
-                # Child Extension (on node)
-                child_extension = ChildOfRootExtension(
-                    name=self.meta.name, 
-                    path=['layers'],
-                    extension=node_layer_names
-                )
-                # Root Extension (in root gltf)
-                extension = Extension(
-                    name=self.meta.name,
-                    extension={'layers' : child_extension}
-                )
+        node_layer_names = [layer.name for layer in blender_object.kuesa.layers]
+        if node_layer_names:
+            # Child Extension (on node)
+            child_extension = ChildOfRootExtension(
+                name='KDAB_Kuesa_Layers',
+                path=['layers'],
+                extension=node_layer_names
+            )
+            # Root Extension (in root gltf)
+            extension = Extension(
+                name='KDAB_Kuesa_Layers',
+                extension={'layers' : child_extension}
+            )
+            print(node_layer_names, extension)
+            return extension
 
-                return extension
         return None
