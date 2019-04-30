@@ -25,6 +25,8 @@ from ...io.com.gltf2_io_debug import print_console
 from ...io.com.gltf2_io_color_management import color_srgb_to_scene_linear
 from io_scene_gltf2.blender.exp import gltf2_blender_gather_skins
 
+import bpy
+
 #
 # Globals
 #
@@ -547,7 +549,24 @@ def extract_primitives(glTF, blender_mesh, blender_vertex_groups, modifiers, exp
 
         loop_index_list = []
 
-        if len(blender_polygon.loop_indices) == 3:
+        # Primitive type
+        export_as_wireframe = False
+        try:
+            bpy.data.meshes[blender_mesh.name]["exportAsWireframe"]
+            export_as_wireframe = True
+        except:
+            pass
+        primitive['mode'] = 1 if export_as_wireframe else 4  # Line if wireframe, Triangle otherwise
+
+        loop_indices_count = len(blender_polygon.loop_indices)
+        if export_as_wireframe and loop_indices_count > 1:
+            # Create line segments from each vertex of the polygon
+            if loop_indices_count > 2:
+                for i in range(loop_indices_count - 1):
+                    loop_index_list += (blender_polygon.loop_indices[i], blender_polygon.loop_indices[i + 1])
+            loop_index_list += (blender_polygon.loop_indices[-1], blender_polygon.loop_indices[0])
+
+        elif len(blender_polygon.loop_indices) == 3:
             loop_index_list.extend(blender_polygon.loop_indices)
         elif len(blender_polygon.loop_indices) > 3:
             # Triangulation of polygon. Using internal function, as non-convex polygons could exist.

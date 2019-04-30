@@ -32,7 +32,6 @@ class KDABKuesaLayers(UserExtensionBase):
                 name='KDAB_Kuesa_Layers',
                 extension={'layers' : child_extension}
             )
-            print(node_layer_names, extension)
             return extension
 
         return None
